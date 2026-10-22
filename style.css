@@ -1,0 +1,289 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
+  --dark: #0f172a;
+  --surface: #ffffff;
+  --background: #f1f5f9;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+body {
+  margin: 0;
+  padding: 32px 24px;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ===== Navigáció ===== */
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto 28px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--dark);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.navbar nav {
+  padding: 13px 22px;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.navbar nav:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+#berles {
+  margin-left: auto;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+#berles:hover {
+  background: var(--primary-hover);
+}
+
+/* ===== Műveleti gombok ===== */
+#buttons {
+  max-width: 1200px;
+  margin: 0 auto 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+button {
+  padding: 11px 18px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:focus-visible,
+.navbar nav:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+#Add {
+  background: var(--success);
+  color: white;
+}
+
+#Add:hover {
+  background: var(--success-hover);
+}
+
+#change {
+  background: var(--primary);
+  color: white;
+}
+
+#change:hover {
+  background: var(--primary-hover);
+}
+
+#Delete {
+  background: var(--danger);
+  color: white;
+}
+
+#Delete:hover {
+  background: var(--danger-hover);
+}
+
+/* ===== Autólista ===== */
+#datatable {
+  max-width: 1200px;
+  margin: 0 auto 28px;
+  padding: 8px;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+td,
+th {
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  font-size: 14px;
+}
+
+tr:first-child {
+  background: var(--dark);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+tr:first-child td {
+  border-bottom: none;
+}
+
+tr:first-child td:first-child {
+  border-top-left-radius: 8px;
+}
+
+tr:first-child td:last-child {
+  border-top-right-radius: 8px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:not(:first-child) {
+  transition: background 0.2s ease;
+}
+
+tr:nth-child(even):not(:first-child) {
+  background: #f8fafc;
+}
+
+tr:not(:first-child):hover {
+  background: #dbeafe;
+}
+
+/* A táblázat sorai kattinthatók */
+#data tr:not(:first-child) {
+  cursor: pointer;
+}
+
+#data tr:first-child {
+  cursor: default;
+}
+
+/* ===== Űrlapok és szerkesztőpanel ===== */
+#MainCustomizingmenu {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#Customizingmenu {
+  max-width: 600px;
+  margin: 0 auto 28px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+#Customizingmenu input[type="text"],
+#Customizingmenu input[type="number"] {
+  display: block;
+  width: 100%;
+  min-height: 43px;
+  margin: 6px 0 16px;
+  padding: 10px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+#Customizingmenu input:focus {
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+}
+
+#Customizingmenu input[type="radio"] {
+  width: 17px;
+  height: 17px;
+  margin: 0 8px 0 2px;
+  vertical-align: middle;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+#Customizingmenu button {
+  margin: 12px 8px 0 0;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+#Customizingmenu button:hover {
+  background: var(--primary-hover);
+}
+
+#Customizingmenu button[onclick="exit()"] {
+  background: var(--muted);
+}
+
+#Customizingmenu button[onclick="exit()"]:hover {
+  background: #475569;
+}
+
+#Customizingmenu button[onclick="delid()"],
+#Customizingmenu button[onclick="delrendszam()"] {
+  background: var(--danger);
+}
+
+#Customizingmenu button[onclick="delid()"]:hover,
+#Customizingmenu button[onclick="delrendszam()"]:hover {
+  background: var(--danger-hover);
+}
