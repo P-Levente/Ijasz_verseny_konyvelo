@@ -1,24 +1,31 @@
+//#region Változók
 const OSZLOPOK = [
-  "id",
-  "rendszam",
-  "marka",
-  "modell",
-  "evjarat",
-  "uzemanyag",
-  "napiAr",
-  "berelheto",
-  "bereltnapok",
+  "Név",
+  "Születési Dátum",
+  "kor",
+  "korcsoport",
+  "kategoria",
+  "Nem",
+  "Elért pontszám",
+  "Százalék",
+  "Helyezet",
 ];
 
 let id = 0;
-let autok = [];
+let versenyzok = [];
+let versenyzo =
+  sorszam  
+  nev
+  szuldat
+  kor = date
+;
 let torlesf = 0;
 let maxid = 0;
 let berles = false;
 let szerk = false;
 let fajlKezelo = null; // File System Access API fájlkezelő (Chrome / Edge)
 const menu = document.getElementById("MainCustomizingmenu");
-
+//#endregion
 /* ===== Segédfüggvények ===== */
 function esc(s) {
   return String(s ?? "").replace(
@@ -29,6 +36,10 @@ function esc(s) {
       ],
   );
 }
+function korszamitas(let sz){
+  
+}
+//#region Fájlkezelés
 
 /* ===== CSV kezelés (különálló szerver nélkül) ===== */
 function csvParse(szoveg) {
@@ -71,9 +82,9 @@ function csvBetolt(szoveg) {
   const fejlec = sorok[0].map((h) => h.trim());
   return sorok.slice(1).map((s) => {
     const o = {};
-    fejlec.forEach((h, i) => (o[h] = (s[i] ?? "").trim()));
+    fejlec.forEach((h, i) => (o[h] = (s[i] ?? "").trim()),);
     return {
-      id: Number(o.id),
+      id: Number(sorok.indexOf(o)),
       rendszam: o.rendszam,
       marka: o.marka,
       modell: o.modell,
@@ -99,7 +110,7 @@ function csvKeszit(lista) {
 /* ===== Fájlkezelő tárolása (IndexedDB), hogy ne kelljen mindig újra kiválasztani ===== */
 function idb() {
   return new Promise((ok, hiba) => {
-    const r = indexedDB.open("autokolcsonzo", 1);
+    const r = indexedDB.open("Ijászat", 1);
     r.onupgradeneeded = () => r.result.createObjectStore("kv");
     r.onsuccess = () => ok(r.result);
     r.onerror = () => hiba(r.error);
@@ -133,16 +144,16 @@ function allapotFrissit() {
       "Csatlakoztatott fájl: " +
       fajlKezelo.name +
       " (a módosítások automatikusan mentődnek)";
-  else if (autok.length || maxid)
+  else if (versenyzok.length || maxid)
     el.textContent =
-      "Nincs csatlakoztatott fájl – mentéskor az autok.csv letöltődik.";
+      "Nincs csatlakoztatott fájl – mentéskor az ijász.csv letöltődik.";
   else el.textContent = "";
 }
 
 async function betoltFajlbol() {
   const fajl = await fajlKezelo.getFile();
-  autok = csvBetolt(await fajl.text());
-  maxid = autok.reduce((m, a) => Math.max(m, a.id), 0);
+  versenyzok = csvBetolt(await fajl.text());
+  maxid = versenyzok.reduce((m, a) => Math.max(m, a.id), 0);
   allapotFrissit();
   feltoltes();
 }
@@ -190,15 +201,15 @@ async function folytatas() {
 async function fajlValasztva(input) {
   const fajl = input.files[0];
   if (!fajl) return;
-  autok = csvBetolt(await fajl.text());
-  maxid = autok.reduce((m, a) => Math.max(m, a.id), 0);
+  versenyzok = csvBetolt(await fajl.text());
+  maxid = versenyzok.reduce((m, a) => Math.max(m, a.id), 0);
   fajlKezelo = null;
   allapotFrissit();
   feltoltes();
 }
 
-async function autokMentese() {
-  const szoveg = csvKeszit(autok);
+async function versenyzokMentese() {
+  const szoveg = csvKeszit(versenyzok);
   if (fajlKezelo) {
     const iro = await fajlKezelo.createWritable();
     await iro.write(szoveg);
@@ -209,7 +220,7 @@ async function autokMentese() {
     );
     const a = document.createElement("a");
     a.href = url;
-    a.download = "autok.csv";
+    a.download = "ijász.csv";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -217,7 +228,7 @@ async function autokMentese() {
 
 async function mentesEsFrissites() {
   try {
-    await autokMentese();
+    await versenyzokMentese();
     feltoltes();
     exit();
   } catch (hiba) {
@@ -225,23 +236,23 @@ async function mentesEsFrissites() {
     alert("Nem sikerült elmenteni az adatokat!");
   }
 }
-
+//#endregion
+//#region kezdoképernyő
 function kezdoKepernyo(vanMentettFajl) {
   const tamogatott = "showOpenFilePicker" in window;
   let html =
-    '<div class="kezdo"><p>Válassza ki az <b>autok.csv</b> fájlt a használathoz.</p>';
+    '<div class="kezdo"><p>Válassza ki az <b>ijász.csv</b> fájlt a használathoz.</p>';
   if (tamogatott) {
     if (vanMentettFajl)
       html += `<button onclick="folytatas()">Folytatás: ${esc(fajlKezelo.name)}</button>`;
-    html += '<button onclick="fajlMegnyitas()">autok.csv megnyitása</button>';
+    html += '<button onclick="fajlMegnyitas()">ijász.csv megnyitása</button>';
   } else {
     html +=
       '<input type="file" accept=".csv" onchange="fajlValasztva(this)">' +
-      "<p>Ez a böngésző nem tud közvetlenül fájlba írni, ezért mentéskor az autok.csv letöltődik. Teljes működéshez használjon Chrome-ot vagy Edge-et.</p>";
+      "<p>Ez a böngésző nem tud közvetlenül fájlba írni, ezért mentéskor az ijász.csv letöltődik. Teljes működéshez használjon Chrome-ot vagy Edge-et.</p>";
   }
   document.getElementById("datatable").innerHTML = html + "</div>";
 }
-
 async function indulas() {
   if ("showOpenFilePicker" in window) {
     try {
@@ -263,16 +274,17 @@ async function indulas() {
   }
   kezdoKepernyo(false);
 }
+//#endregion
 
 /* ===== Táblázat ===== */
 function feltoltes() {
   let h = `<table id="data"><tr>
-    <td>Autó Id</td><td>Rendszám</td><td>Márka</td><td>Modell</td>
-    <td>Évjárat</td><td>Üzemanyag</td><td>Napiár(ft)</td><td>Bérelhető</td></tr>`;
-  autok.forEach((a) => {
-    h += `<tr onclick="selectCar(${Number(a.id)})"><td>${esc(a.id)}</td><td>${esc(a.rendszam)}</td><td>${esc(a.marka)}</td>
-      <td>${esc(a.modell)}</td><td>${esc(a.evjarat)}</td><td>${esc(a.uzemanyag)}</td><td>${esc(a.napiAr)}</td>
-      <td>${a.berelheto ? "igen" : "nem (még " + esc(a.bereltnapok) + " napig)"}</td></tr>`;
+    <td>Név</td><td>Születési Dátum</td><td>kor</td><td>korcsoport</td>
+    <td>kategoria</td><td>Nem</td><td>Elért pontszám(ft)</td><td>Százalék</td><td>Helyezet</td></tr>`;
+  versenyzok.forEach((a) => {
+    h += `<tr onclick="selectCar(${esc(a.nev)})"><td>${esc(a.szuldat)}</td><td>${esc(a.kor)}</td><td>${esc(a.korcs)}</td>
+      <td>${esc(a.kat)}</td><td>${a.nem ? "Férfi" : "Nő"}</td><td>${esc(a.pontsz)}</td><td>${esc(a.szazal)}</td>
+      <td>${a.hely}</td></tr>`;
     if (a.id > maxid) maxid = a.id;
   });
   document.getElementById("datatable").innerHTML = h + "</table>";
@@ -361,11 +373,11 @@ function add() {
 async function addsave() {
   const adat = urlapOlvas("add");
   if (!adat) return;
-  if (autok.some((a) => a.rendszam === adat.rendszam)) {
+  if (versenyzok.some((a) => a.rendszam === adat.rendszam)) {
     alert("Ilyen rendszámú autó már létezik!");
     return;
   }
-  autok.push({ id: maxid + 1, ...adat });
+  versenyzok.push({ id: maxid + 1, ...adat });
   await mentesEsFrissites();
 }
 
@@ -374,7 +386,7 @@ function change() {
   const bevitel = prompt("Adja meg a módosítani kívánt autó ID-jét:");
   if (bevitel === null) return;
   id = Number(bevitel);
-  const auto = autok.find((a) => a.id === id);
+  const auto = versenyzok.find((a) => a.id === id);
   if (!auto) {
     alert("Nincs ilyen ID-jű autó!");
     return;
@@ -384,10 +396,10 @@ function change() {
 }
 
 async function changesave() {
-  const auto = autok.find((a) => a.id === id);
+  const auto = versenyzok.find((a) => a.id === id);
   const adat = urlapOlvas("change");
   if (!auto || !adat) return;
-  if (autok.some((a) => a.id !== id && a.rendszam === adat.rendszam)) {
+  if (versenyzok.some((a) => a.id !== id && a.rendszam === adat.rendszam)) {
     alert("Ilyen rendszámú autó már létezik!");
     return;
   }
@@ -423,19 +435,19 @@ function delrendszam() {
   });
 }
 async function deletesave() {
-  const ujautok = autok.filter((a) =>
+  const ujversenyzok = versenyzok.filter((a) =>
     torlesf === 1
       ? a.id != document.getElementById("delidinput").value
       : a.rendszam.toUpperCase() !==
         document.getElementById("delrendszaminput").value.trim().toUpperCase(),
   );
-  if (ujautok.length === autok.length) {
+  if (ujversenyzok.length === versenyzok.length) {
     alert("Nincs ilyen autó!");
     return;
   }
-  ujautok.forEach((a, i) => (a.id = i + 1)); // az ID-k újraszámozása, mint eddig
-  autok = ujautok;
-  maxid = autok.length;
+  ujversenyzok.forEach((a, i) => (a.id = i + 1)); // az ID-k újraszámozása, mint eddig
+  versenyzok = ujversenyzok;
+  maxid = versenyzok.length;
   await mentesEsFrissites();
 }
 
@@ -473,7 +485,7 @@ function berel() {
 /* ===== Bérlés ===== */
 function selectCar(aid) {
   if (!berles || szerk) return;
-  const auto = autok.find((a) => a.id === aid);
+  const auto = versenyzok.find((a) => a.id === aid);
   if (!auto) return alert("Nincs ilyen autó!");
   if (!auto.berelheto) return alert("Az autó nem bérelhető.");
   id = aid;
@@ -491,7 +503,7 @@ async function autoberelsave() {
     alert("Adjon meg legalább 1 napot!");
     return;
   }
-  const auto = autok.find((a) => a.id === id);
+  const auto = versenyzok.find((a) => a.id === id);
   if (!auto) return;
   auto.bereltnapok = napok;
   auto.berelheto = false;
